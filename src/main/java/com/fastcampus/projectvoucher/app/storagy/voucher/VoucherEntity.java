@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Entity
 public class VoucherEntity extends BaseEntity {
     @Column private String code;
+    @Enumerated(EnumType.STRING)
     @Column private VoucherStatusType status;
     @Column private LocalDate validFrom;
     @Column private LocalDate validTo;

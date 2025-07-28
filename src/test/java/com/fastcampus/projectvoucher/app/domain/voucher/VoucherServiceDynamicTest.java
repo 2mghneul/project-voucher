@@ -1,5 +1,7 @@
 package com.fastcampus.projectvoucher.app.domain.voucher;
 
+import com.fastcampus.projectvoucher.app.common.dto.RequestContext;
+import com.fastcampus.projectvoucher.app.common.type.RequesterType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherAmountType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherStatusType;
 import com.fastcampus.projectvoucher.app.storagy.voucher.VoucherEntity;
@@ -17,6 +19,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 public class VoucherServiceDynamicTest {
@@ -30,12 +33,13 @@ public class VoucherServiceDynamicTest {
         return Stream.of(
                 dynamicTest("[0] 상품권을 발행합니다.", () -> {
                     // given
+                    RequestContext requestContext = new RequestContext(any(), any());
                     LocalDate validFrom = LocalDate.now();
                     LocalDate validTo = LocalDate.now().plusDays(30);
                     VoucherAmountType amount = VoucherAmountType.KRW_30000;
 
                     // when
-                    String code = voucherService.publish(validFrom, validTo, amount);;
+                    String code = voucherService.publish(requestContext, validFrom, validTo, amount);;
                     codes.add(code);
 
                     // then
@@ -44,10 +48,11 @@ public class VoucherServiceDynamicTest {
                 }),
                 dynamicTest("[1] 상품권을 사용불가 처리합니다.", () -> {
                     // given
+                    RequestContext requestContext = new RequestContext(any(), any());
                     String code = codes.get(0);
 
                     // when
-                    voucherService.disable(code);
+                    voucherService.disable(requestContext, code);
 
                     // then
                     VoucherEntity entity = voucherRepository.findByCode(code).get();
@@ -55,10 +60,12 @@ public class VoucherServiceDynamicTest {
                 }),
                 dynamicTest("[2] 사용불가 상태의 상품권은 사용할 수 업습니다.", () -> {
                     // given
+                    RequestContext requestContext = new RequestContext(any(), any());
+
                     String code = codes.get(0);
 
                     // when
-                    assertThatThrownBy(() -> voucherService.use(code))
+                    assertThatThrownBy(() -> voucherService.use(requestContext, code))
                             .isInstanceOf(IllegalStateException.class)
                             .hasMessage("사용할 수 없는 상태의 상품권 입니다.");
 
@@ -68,14 +75,15 @@ public class VoucherServiceDynamicTest {
                 }),
                 dynamicTest("[3] 싱품권을 사용합니다.", () -> {
                     // given
+                    RequestContext requestContext = new RequestContext(any(), any());
                     LocalDate validFrom = LocalDate.now();
                     LocalDate validTo = LocalDate.now().plusDays(30);
                     VoucherAmountType amount = VoucherAmountType.KRW_30000;
-                    String code = voucherService.publish(validFrom, validTo, amount);;
+                    String code = voucherService.publish(requestContext, validFrom, validTo, amount);;
                     codes.add(code);
 
                     // when
-                    voucherService.use(code);
+                    voucherService.use(requestContext, code);
 
                     // then
                     VoucherEntity entity = voucherRepository.findByCode(code).get();
@@ -83,10 +91,11 @@ public class VoucherServiceDynamicTest {
                 }),
                 dynamicTest("[5] 사용한 상품권은 사용 불가 처리할 수 없습니다.", () -> {
                     // given
+                    RequestContext requestContext = new RequestContext(any(), any());
                     String code = codes.get(1);
 
                     // when
-                    assertThatThrownBy(() -> voucherService.disable(code))
+                    assertThatThrownBy(() -> voucherService.disable(requestContext, code))
                             .isInstanceOf(IllegalStateException.class)
                             .hasMessage("사용 뷸가 처리할 수 없는 상태의 상품권 입니다.");
 
@@ -96,10 +105,11 @@ public class VoucherServiceDynamicTest {
                 }),
                 dynamicTest("[6] 사용한 상품권은 또 사용할 수 없습니다.", () -> {
                     // given
+                    RequestContext requestContext = new RequestContext(any(), any());
                     String code = codes.get(1);
 
                     // when
-                    assertThatThrownBy(() -> voucherService.use(code))
+                    assertThatThrownBy(() -> voucherService.use(requestContext, code))
                             .isInstanceOf(IllegalStateException.class)
                             .hasMessage("사용할 수 없는 상태의 상품권 입니다.");
 

@@ -1,5 +1,6 @@
 package com.fastcampus.projectvoucher.app.domain.voucher;
 
+import com.fastcampus.projectvoucher.app.common.dto.RequestContext;
 import com.fastcampus.projectvoucher.app.common.type.VoucherAmountType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherStatusType;
 import com.fastcampus.projectvoucher.app.storagy.voucher.VoucherEntity;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 @DisplayName("")
 @SpringBootTest
@@ -23,11 +25,12 @@ class VoucherServiceTest {
     @Test
     void test1() {
         // given
+        RequestContext requestContext = new RequestContext(any(), any());
         LocalDate validFrom = LocalDate.now();
         LocalDate validTo = LocalDate.now().plusDays(30);
         VoucherAmountType amount = VoucherAmountType.KRW_30000;
-        
-        String code = voucherService.publish(validFrom, validTo, amount);
+
+        String code = voucherService.publish(requestContext, validFrom, validTo, amount);
 
         // when
         VoucherEntity entity = voucherRepository.findByCode(code).get();
@@ -44,14 +47,15 @@ class VoucherServiceTest {
     @Test
     void test2() {
         // given
+        RequestContext requestContext = new RequestContext(any(), any());
         LocalDate validFrom = LocalDate.now();
         LocalDate validTo = LocalDate.now().plusDays(30);
         VoucherAmountType amount = VoucherAmountType.KRW_30000;
 
-        String code = voucherService.publish(validFrom, validTo, amount);
+        String code = voucherService.publish(requestContext, validFrom, validTo, amount);
 
         // when
-        voucherService.disable(code);
+        voucherService.disable(requestContext, code);
         VoucherEntity entity = voucherRepository.findByCode(code).get();
 
         // then
@@ -67,14 +71,15 @@ class VoucherServiceTest {
     @Test
     void test3() {
         // given
+        RequestContext requestContext = new RequestContext(any(), any());
         LocalDate validFrom = LocalDate.now();
         LocalDate validTo = LocalDate.now().plusDays(30);
         VoucherAmountType amount = VoucherAmountType.KRW_30000;
 
-        String code = voucherService.publish(validFrom, validTo, amount);
+        String code = voucherService.publish(requestContext, validFrom, validTo, amount);
 
         // when
-        voucherService.use(code);
+        voucherService.use(requestContext, code);
         VoucherEntity entity = voucherRepository.findByCode(code).get();
 
         // then

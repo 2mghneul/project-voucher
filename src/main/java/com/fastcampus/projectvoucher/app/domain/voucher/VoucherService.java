@@ -1,5 +1,6 @@
 package com.fastcampus.projectvoucher.app.domain.voucher;
 
+import com.fastcampus.projectvoucher.app.common.dto.RequestContext;
 import com.fastcampus.projectvoucher.app.common.type.RequesterType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherAmountType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherStatusType;
@@ -20,7 +21,7 @@ public class VoucherService {
 
     // 상품권 발행
     @Transactional
-    public String publish(RequesterType requesterType, String requesterId, LocalDate validFrom, LocalDate validTo, VoucherAmountType amount) {
+    public String publish(RequestContext requestContext, LocalDate validFrom, LocalDate validTo, VoucherAmountType amount) {
         final String code = UUID.randomUUID().toString().toUpperCase().replaceAll("-","");
         final VoucherEntity entity = new VoucherEntity(code, VoucherStatusType.PUBLISH, validFrom, validTo, amount);
 
@@ -29,7 +30,7 @@ public class VoucherService {
 
     // 상품권 사용 불가 처리
     @Transactional
-    public void disable(RequesterType requesterType, String requesterId, String code) {
+    public void disable(RequestContext requestContext, String code) {
         VoucherEntity entitiy = voucherRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품권이 존재하지 않습니다."));
 
@@ -38,7 +39,7 @@ public class VoucherService {
 
     // 상품권 사용
     @Transactional
-    public void use(RequesterType requesterType, String requesterId,  String code) {
+    public void use(RequestContext requestContext,  String code) {
         VoucherEntity entitiy = voucherRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품권이 존재하지 않습니다."));
 
