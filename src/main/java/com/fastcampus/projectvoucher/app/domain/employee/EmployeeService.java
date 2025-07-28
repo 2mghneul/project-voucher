@@ -1,25 +1,31 @@
 package com.fastcampus.projectvoucher.app.domain.employee;
 
 import com.fastcampus.projectvoucher.app.response.EmployeeResponse;
+import com.fastcampus.projectvoucher.app.storagy.EmployeeRepository;
+import com.fastcampus.projectvoucher.app.storagy.employee.EmployeeEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
-    private final Map<Long, EmployeeResponse> employeeResponseMap =  new HashMap<>();
+    private final EmployeeRepository employeeRepository;
+
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
 
     // 사원 생성
     public Long create(String name, String position, String department) {
-        Long no = employeeResponseMap.size() + 1L;
-        employeeResponseMap.put(no, new EmployeeResponse(no, name, position, department));
-        return no;
+        EmployeeEntity employee = employeeRepository.save(new EmployeeEntity(name, position, department));
+        return employee.id();
     }
 
     // 사원 조회
     public EmployeeResponse get(Long no) {
-        return employeeResponseMap.get(no);
+        EmployeeEntity employee = employeeRepository.findById(no)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사원입니다."));
+        return EmployeeResponse.fromEntity(employee);
     }
 
 }
