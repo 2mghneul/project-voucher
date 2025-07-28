@@ -1,1 +1,17 @@
-spring.application.name=project-voucher
+spring:
+  application.name: project-voucher
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/project-voucher
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
