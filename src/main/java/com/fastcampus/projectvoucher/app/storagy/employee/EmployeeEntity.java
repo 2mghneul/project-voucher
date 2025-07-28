@@ -7,13 +7,13 @@ import jakarta.persistence.*;
 @Entity
 public class EmployeeEntity extends BaseEntity {
     @Column
-    String name;
+    private String name;
 
     @Column
-    String position;
+    private String position;
 
     @Column
-    String department;
+    private String department;
 
     public EmployeeEntity() {
     }
