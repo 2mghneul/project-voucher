@@ -1,14 +1,11 @@
 package com.fastcampus.projectvoucher.app.storagy.employee;
 
+import com.fastcampus.projectvoucher.app.storagy.BaseEntity;
 import jakarta.persistence.*;
 
 @Table(name = "employee")
 @Entity
-public class EmployeeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-
+public class EmployeeEntity extends BaseEntity {
     @Column
     String name;
 
@@ -25,10 +22,6 @@ public class EmployeeEntity {
         this.name = name;
         this.position = position;
         this.department = department;
-    }
-
-    public Long id() {
-        return id;
     }
 
     public String name() {
