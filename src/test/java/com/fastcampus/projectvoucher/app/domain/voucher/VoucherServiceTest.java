@@ -21,7 +21,7 @@ class VoucherServiceTest {
 
     @DisplayName("발행된 상품권은 코드로 조회 할 수 있어야 한다.")
     @Test
-    void test() {
+    void test1() {
         // given
         LocalDate validFrom = LocalDate.now();
         LocalDate validTo = LocalDate.now().plusDays(30);
@@ -38,5 +38,28 @@ class VoucherServiceTest {
         assertThat(entity.validFrom()).isEqualTo(validFrom);
         assertThat(entity.validTo()).isEqualTo(validTo);
         assertThat(entity.amount()).isEqualTo(amount);
+    }
+
+    @DisplayName("발행된 상품권은 사용불가 처리 할 수 있어야 한다.")
+    @Test
+    void test2() {
+        // given
+        LocalDate validFrom = LocalDate.now();
+        LocalDate validTo = LocalDate.now().plusDays(30);
+        Long amount = 10000L;
+
+        String code = voucherService.publish(validFrom, validTo, amount);
+
+        // when
+        voucherService.disable(code);
+        VoucherEntity entity = voucherRepository.findByCode(code).get();
+
+        // then
+        assertThat(entity.code()).isEqualTo(code);
+        assertThat(entity.status()).isEqualTo(VoucherStatusType.DISABLE);
+        assertThat(entity.validFrom()).isEqualTo(validFrom);
+        assertThat(entity.validTo()).isEqualTo(validTo);
+        assertThat(entity.amount()).isEqualTo(amount);
+        assertThat(entity.createdAt()).isNotEqualTo(entity.updateAt());
     }
 }

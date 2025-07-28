@@ -37,4 +37,8 @@ public class VoucherEntity extends BaseEntity {
     public LocalDate validTo() { return validTo; }
 
     public Long amount() { return amount; }
+
+    public void disable() {
+        this.status = VoucherStatusType.DISABLE;
+    }
 }
