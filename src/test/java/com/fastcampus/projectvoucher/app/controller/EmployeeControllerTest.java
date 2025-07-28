@@ -1,7 +1,7 @@
 package com.fastcampus.projectvoucher.app.controller;
 
 import com.fastcampus.projectvoucher.app.domain.employee.EmployeeService;
-import com.fastcampus.projectvoucher.app.response.EmployeeResponse;
+import com.fastcampus.projectvoucher.app.controller.employee.response.EmployeeResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

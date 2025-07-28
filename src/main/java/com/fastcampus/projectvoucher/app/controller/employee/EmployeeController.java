@@ -1,8 +1,8 @@
-package com.fastcampus.projectvoucher.app.controller;
+package com.fastcampus.projectvoucher.app.controller.employee;
 
+import com.fastcampus.projectvoucher.app.controller.employee.request.EmployeeCreateRequest;
 import com.fastcampus.projectvoucher.app.domain.employee.EmployeeService;
-import com.fastcampus.projectvoucher.app.request.EmployeeCreateRequest;
-import com.fastcampus.projectvoucher.app.response.EmployeeResponse;
+import com.fastcampus.projectvoucher.app.controller.employee.response.EmployeeResponse;
 import org.springframework.web.bind.annotation.*;
 
 

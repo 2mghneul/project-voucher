@@ -1,6 +1,6 @@
 package com.fastcampus.projectvoucher.app.domain.employee;
 
-import com.fastcampus.projectvoucher.app.response.EmployeeResponse;
+import com.fastcampus.projectvoucher.app.controller.employee.response.EmployeeResponse;
 import com.fastcampus.projectvoucher.app.storagy.employee.EmployeeRepository;
 import com.fastcampus.projectvoucher.app.storagy.employee.EmployeeEntity;
 import org.springframework.stereotype.Service;

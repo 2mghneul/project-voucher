@@ -1,4 +1,4 @@
-package com.fastcampus.projectvoucher.app.response;
+package com.fastcampus.projectvoucher.app.controller.employee.response;
 
 import com.fastcampus.projectvoucher.app.storagy.employee.EmployeeEntity;
 
