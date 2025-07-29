@@ -25,9 +25,9 @@ public class VoucherController {
     public VoucherPublishResponse publish(@RequestBody VoucherPublishRequest request) {
         String publishedVoucherCode = voucherService.publish(
                 new RequestContext(request.requesterType(), request.requesterId()),
-                LocalDate.now(),
-                LocalDate.now().plusDays(1830L),
-                request.amount());
+                request.contractCode(),
+                request.amount()
+                );
         return new VoucherPublishResponse("order_id", publishedVoucherCode);
     }
 

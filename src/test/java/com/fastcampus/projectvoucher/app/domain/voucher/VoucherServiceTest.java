@@ -3,24 +3,23 @@ package com.fastcampus.projectvoucher.app.domain.voucher;
 import com.fastcampus.projectvoucher.app.common.dto.RequestContext;
 import com.fastcampus.projectvoucher.app.common.type.VoucherAmountType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherStatusType;
-import com.fastcampus.projectvoucher.app.storagy.voucher.VoucherEntity;
-import com.fastcampus.projectvoucher.app.storagy.voucher.VoucherHistoryEntity;
-import com.fastcampus.projectvoucher.app.storagy.voucher.VoucherRepository;
+import com.fastcampus.projectvoucher.app.storagy.voucher.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-@DisplayName("")
 @SpringBootTest
 class VoucherServiceTest {
     @Autowired private VoucherService voucherService;
     @Autowired private VoucherRepository voucherRepository;
+    @Autowired private ContractRepository contractRepository;
 
     @DisplayName("발행된 상품권은 코드로 조회 할 수 있어야 한다.")
     @Test
@@ -28,10 +27,12 @@ class VoucherServiceTest {
         // given
         RequestContext requestContext = new RequestContext(any(), any());
         LocalDate validFrom = LocalDate.now();
-        LocalDate validTo = LocalDate.now().plusDays(30);
+        LocalDate validTo = LocalDate.now().plusDays(366 * 5);
         VoucherAmountType amount = VoucherAmountType.KRW_30000;
+        String contactCode = "CT001";
 
-        String code = voucherService.publish(requestContext, validFrom, validTo, amount);
+        String code = voucherService.publish(requestContext, contactCode, amount);
+
 
         // when
         VoucherEntity entity = voucherRepository.findByCode(code).get();
@@ -52,16 +53,40 @@ class VoucherServiceTest {
         assertThat(historyEntity.description()).isEqualTo("테스트 발행");
     }
 
-    @DisplayName("발행된 상품권은 사용불가 처리 할 수 있어야 한다.")
+    @DisplayName("발행된 상품권은 voucherValidPeriodDayCount 만큼 유효기간을 가져야 한다.")
     @Test
     void test2() {
         // given
         RequestContext requestContext = new RequestContext(any(), any());
-        LocalDate validFrom = LocalDate.now();
-        LocalDate validTo = LocalDate.now().plusDays(30);
         VoucherAmountType amount = VoucherAmountType.KRW_30000;
 
-        String code = voucherService.publish(requestContext, validFrom, validTo, amount);
+        String contactCode = "CT001";
+
+        // when
+        String code = voucherService.publish(requestContext, contactCode, amount);
+        VoucherEntity voucherEntity = voucherRepository.findByCode(code).get();
+
+        // then
+        ContractEntity contractEntity = contractRepository.findByCode(contactCode).get();
+        assertThat(voucherEntity.code()).isEqualTo(code);
+        assertThat(voucherEntity.status()).isEqualTo(VoucherStatusType.PUBLISH);
+        assertThat(voucherEntity.validFrom()).isEqualTo(LocalDate.now());
+        assertThat(voucherEntity.validTo()).isEqualTo(LocalDate.now().plusDays(contractEntity.voucherValidPeriodDayCount()));
+        assertThat(voucherEntity.amount()).isEqualTo(amount);
+    }
+
+    @DisplayName("발행된 상품권은 사용불가 처리 할 수 있어야 한다.")
+    @Test
+    void test3() {
+        // given
+        RequestContext requestContext = new RequestContext(any(), any());
+        LocalDate validFrom = LocalDate.now();
+        LocalDate validTo = LocalDate.now().plusDays(366 * 5);
+        VoucherAmountType amount = VoucherAmountType.KRW_30000;
+        String contactCode = "CT001";
+
+
+        String code = voucherService.publish(requestContext, contactCode, amount);
 
         RequestContext disableRequestContext = new RequestContext(any(), any());
 
@@ -88,14 +113,16 @@ class VoucherServiceTest {
 
     @DisplayName("발행된 상품권은 사용 할 수 있다.")
     @Test
-    void test3() {
+    void test4() {
         // given
         RequestContext requestContext = new RequestContext(any(), any());
         LocalDate validFrom = LocalDate.now();
-        LocalDate validTo = LocalDate.now().plusDays(30);
+        LocalDate validTo = LocalDate.now().plusDays(366 * 5);
         VoucherAmountType amount = VoucherAmountType.KRW_30000;
+        String contactCode = "CT001";
 
-        String code = voucherService.publish(requestContext, validFrom, validTo, amount);
+
+        String code = voucherService.publish(requestContext, contactCode, amount);
 
         RequestContext useRequestContext = new RequestContext(any(), any());
 

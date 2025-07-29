@@ -36,9 +36,10 @@ public class VoucherServiceDynamicTest {
                     LocalDate validFrom = LocalDate.now();
                     LocalDate validTo = LocalDate.now().plusDays(30);
                     VoucherAmountType amount = VoucherAmountType.KRW_30000;
+                    String contractCode = "CT001";
 
                     // when
-                    String code = voucherService.publish(requestContext, validFrom, validTo, amount);;
+                    String code = voucherService.publish(requestContext, contractCode, amount);;
                     codes.add(code);
 
                     // then
@@ -78,7 +79,8 @@ public class VoucherServiceDynamicTest {
                     LocalDate validFrom = LocalDate.now();
                     LocalDate validTo = LocalDate.now().plusDays(30);
                     VoucherAmountType amount = VoucherAmountType.KRW_30000;
-                    String code = voucherService.publish(requestContext, validFrom, validTo, amount);;
+                    String contractCode = "CT001";
+                    String code = voucherService.publish(requestContext, contractCode, amount);;
                     codes.add(code);
 
                     // when

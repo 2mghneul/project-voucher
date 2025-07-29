@@ -6,5 +6,6 @@ import com.fastcampus.projectvoucher.app.common.type.VoucherAmountType;
 public record VoucherPublishRequest(
         RequesterType requesterType,
         String requesterId,
+        String contractCode,
         VoucherAmountType amount
 ) {}
