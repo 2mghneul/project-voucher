@@ -25,5 +25,4 @@ public class EmployeeService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사원입니다."));
         return EmployeeResponse.fromEntity(employee);
     }
-
 }

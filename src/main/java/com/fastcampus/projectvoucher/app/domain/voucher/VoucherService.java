@@ -7,7 +7,6 @@ import com.fastcampus.projectvoucher.app.storagy.voucher.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -30,7 +29,7 @@ public class VoucherService {
 
         final VoucherHistoryEntity voucherHistoryEntity =
                 new VoucherHistoryEntity(order_id, requestContext.requesterType(), requestContext.requesterId(), VoucherStatusType.PUBLISH, "테스트 발행");
-        final VoucherEntity voucherEntity = new VoucherEntity(code, VoucherStatusType.PUBLISH, LocalDate.now(), LocalDate.now().plusDays(contractEntity.voucherValidPeriodDayCount()), amount, voucherHistoryEntity);
+        final VoucherEntity voucherEntity = new VoucherEntity(code, VoucherStatusType.PUBLISH, amount, voucherHistoryEntity, contractEntity);
 
         return voucherRepository.save(voucherEntity).code();
     }
@@ -42,10 +41,10 @@ public class VoucherService {
         final VoucherHistoryEntity voucherHistoryEntity =
                 new VoucherHistoryEntity(order_id, requestContext.requesterType(), requestContext.requesterId(), VoucherStatusType.DISABLE, "테스트 사용 불가");
 
-        VoucherEntity entitiy = voucherRepository.findByCode(code)
+        VoucherEntity entity = voucherRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품권이 존재하지 않습니다."));
 
-        entitiy.disable(voucherHistoryEntity);
+        entity.disable(voucherHistoryEntity);
     }
 
     // 상품권 사용
@@ -55,9 +54,9 @@ public class VoucherService {
         final VoucherHistoryEntity voucherHistoryEntity =
                 new VoucherHistoryEntity(order_id, requestContext.requesterType(), requestContext.requesterId(), VoucherStatusType.USE, "테스트 사용");
 
-        VoucherEntity entitiy = voucherRepository.findByCode(code)
+        VoucherEntity entity = voucherRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품권이 존재하지 않습니다."));
 
-        entitiy.use(voucherHistoryEntity);
+        entity.use(voucherHistoryEntity);
     }
 }
