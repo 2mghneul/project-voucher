@@ -81,16 +81,15 @@ class VoucherServiceTest {
     @Test
     void test3() {
         // given
-        RequestContext requestContext = new RequestContext(any(), any());
+        RequestContext requestContext = new RequestContext(RequesterType.PARTNER, "A00056");
         LocalDate validFrom = LocalDate.now();
         LocalDate validTo = LocalDate.now().plusDays(366 * 5);
         VoucherAmountType amount = VoucherAmountType.KRW_30000;
         String contactCode = "CT001";
 
-
         String code = voucherService.publish(requestContext, contactCode, amount);
 
-        RequestContext disableRequestContext = new RequestContext(any(), any());
+        RequestContext disableRequestContext = new RequestContext(RequesterType.PARTNER, "A00056");
 
         // when
         voucherService.disable(requestContext, code);
@@ -106,6 +105,7 @@ class VoucherServiceTest {
 
         // history
         VoucherHistoryEntity historyEntity = entity.histories().get(entity.histories().size() - 1);
+
         assertThat(historyEntity.orderId()).isNotNull();
         assertThat(historyEntity.requesterType()).isEqualTo(disableRequestContext.requesterType());
         assertThat(historyEntity.requesterId()).isEqualTo(disableRequestContext.requesterId());
@@ -122,7 +122,6 @@ class VoucherServiceTest {
         LocalDate validTo = LocalDate.now().plusDays(366 * 5);
         VoucherAmountType amount = VoucherAmountType.KRW_30000;
         String contactCode = "CT001";
-
 
         String code = voucherService.publish(requestContext, contactCode, amount);
 

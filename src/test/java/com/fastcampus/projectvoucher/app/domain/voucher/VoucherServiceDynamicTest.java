@@ -1,6 +1,7 @@
 package com.fastcampus.projectvoucher.app.domain.voucher;
 
 import com.fastcampus.projectvoucher.app.common.dto.RequestContext;
+import com.fastcampus.projectvoucher.app.common.type.RequesterType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherAmountType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherStatusType;
 import com.fastcampus.projectvoucher.app.storagy.voucher.VoucherEntity;
@@ -32,7 +33,7 @@ public class VoucherServiceDynamicTest {
         return Stream.of(
                 dynamicTest("[0] 상품권을 발행합니다.", () -> {
                     // given
-                    RequestContext requestContext = new RequestContext(any(), any());
+                    RequestContext requestContext = new RequestContext(RequesterType.PARTNER, "A00056");
                     LocalDate validFrom = LocalDate.now();
                     LocalDate validTo = LocalDate.now().plusDays(30);
                     VoucherAmountType amount = VoucherAmountType.KRW_30000;
@@ -48,7 +49,7 @@ public class VoucherServiceDynamicTest {
                 }),
                 dynamicTest("[1] 상품권을 사용불가 처리합니다.", () -> {
                     // given
-                    RequestContext requestContext = new RequestContext(any(), any());
+                    RequestContext requestContext = new RequestContext(RequesterType.PARTNER, "A00056");
                     String code = codes.get(0);
 
                     // when
@@ -60,7 +61,7 @@ public class VoucherServiceDynamicTest {
                 }),
                 dynamicTest("[2] 사용불가 상태의 상품권은 사용할 수 업습니다.", () -> {
                     // given
-                    RequestContext requestContext = new RequestContext(any(), any());
+                    RequestContext requestContext = new RequestContext(RequesterType.PARTNER, "A00056");
 
                     String code = codes.get(0);
 
@@ -75,7 +76,7 @@ public class VoucherServiceDynamicTest {
                 }),
                 dynamicTest("[3] 싱품권을 사용합니다.", () -> {
                     // given
-                    RequestContext requestContext = new RequestContext(any(), any());
+                    RequestContext requestContext = new RequestContext(RequesterType.PARTNER, "A00056");
                     LocalDate validFrom = LocalDate.now();
                     LocalDate validTo = LocalDate.now().plusDays(30);
                     VoucherAmountType amount = VoucherAmountType.KRW_30000;
@@ -92,7 +93,7 @@ public class VoucherServiceDynamicTest {
                 }),
                 dynamicTest("[5] 사용한 상품권은 사용 불가 처리할 수 없습니다.", () -> {
                     // given
-                    RequestContext requestContext = new RequestContext(any(), any());
+                    RequestContext requestContext = new RequestContext(RequesterType.PARTNER, "A00056");
                     String code = codes.get(1);
 
                     // when
