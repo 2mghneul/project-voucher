@@ -48,6 +48,12 @@ public class VoucherService {
         VoucherEntity entity = voucherRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품권이 존재하지 않습니다."));
 
+
+
+        if (entity.publishHistory().requesterType() != requestContext.requesterType() || !entity.publishHistory().requesterId().equals(requestContext.requesterId())) {
+            throw  new IllegalArgumentException("사용 불가 처리 권한이 없는 상품권 입니다.");
+        }
+
         entity.disable(voucherHistoryEntity);
     }
 

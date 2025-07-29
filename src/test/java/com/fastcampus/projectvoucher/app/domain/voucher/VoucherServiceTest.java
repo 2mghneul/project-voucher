@@ -1,6 +1,7 @@
 package com.fastcampus.projectvoucher.app.domain.voucher;
 
 import com.fastcampus.projectvoucher.app.common.dto.RequestContext;
+import com.fastcampus.projectvoucher.app.common.type.RequesterType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherAmountType;
 import com.fastcampus.projectvoucher.app.common.type.VoucherStatusType;
 import com.fastcampus.projectvoucher.app.storagy.voucher.*;
@@ -161,5 +162,29 @@ class VoucherServiceTest {
         assertThatThrownBy(() -> voucherService.publish(requestContext, contactCode, amount))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("유효기간이 지난 계약입니다.");
+    }
+
+    @DisplayName("상품권은 발행 요청자만 사용 불가 처리할 수 있다.")
+    @Test
+    void test6() {
+        // given
+        RequestContext requestContext = new RequestContext(any(), any());
+        VoucherAmountType amount = VoucherAmountType.KRW_30000;
+
+        String contactCode = "CT001";
+        String code = voucherService.publish(requestContext, contactCode, amount);
+
+        RequestContext otherRequestContext = new RequestContext(RequesterType.USER, UUID.randomUUID().toString());
+
+        // when
+        assertThatThrownBy(() -> voucherService.disable(otherRequestContext, code))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("사용 불가 처리 권한이 없는 상품권 입니다.");
+
+        // then
+        VoucherEntity voucherEntity = voucherRepository.findByCode(code).get();
+
+        assertThat(voucherEntity.code()).isEqualTo(code);
+        assertThat(voucherEntity.status()).isEqualTo(VoucherStatusType.PUBLISH);
     }
 }
