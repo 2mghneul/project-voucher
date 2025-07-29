@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
@@ -145,5 +146,20 @@ class VoucherServiceTest {
         assertThat(historyEntity.requesterId()).isEqualTo(useRequestContext.requesterId());
         assertThat(historyEntity.status()).isEqualTo(VoucherStatusType.USE);
         assertThat(historyEntity.description()).isEqualTo("테스트 사용");
+    }
+
+    @DisplayName("유효기간이 지난 계약으로는 상품권을 발행 할 수 없다.")
+    @Test
+    void test5() {
+        // given
+        RequestContext requestContext = new RequestContext(any(), any());
+        VoucherAmountType amount = VoucherAmountType.KRW_30000;
+
+        String contactCode = "CT0010";
+
+        // when & then
+        assertThatThrownBy(() -> voucherService.publish(requestContext, contactCode, amount))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("유효기간이 지난 계약입니다.");
     }
 }

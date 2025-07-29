@@ -27,6 +27,10 @@ public class VoucherService {
         ContractEntity contractEntity = contractRepository.findByCode(contractCode)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계약입니다."));
 
+        if (contractEntity.isExpired()) {
+            throw new IllegalStateException("유효기간이 지난 계약입니다.");
+        }
+
         final VoucherHistoryEntity voucherHistoryEntity =
                 new VoucherHistoryEntity(order_id, requestContext.requesterType(), requestContext.requesterId(), VoucherStatusType.PUBLISH, "테스트 발행");
         final VoucherEntity voucherEntity = new VoucherEntity(code, VoucherStatusType.PUBLISH, amount, voucherHistoryEntity, contractEntity);
